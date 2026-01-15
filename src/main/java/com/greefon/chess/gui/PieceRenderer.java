@@ -1,4 +1,4 @@
-package com.greefon.chess.render;
+package com.greefon.chess.gui;
 
 import com.github.weisj.jsvg.SVGDocument;
 import com.github.weisj.jsvg.parser.SVGLoader;

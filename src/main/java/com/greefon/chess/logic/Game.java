@@ -8,6 +8,7 @@ public class Game {
     private ChessColor turn;
     private Point enPassantPawn;
     private boolean gameOver;
+    private int totalTurns = 0;
 
     public List<Point> doubleMovableWhitePawns = new ArrayList<>(
             ChessMoves.getWhitePawnStartPositions()
@@ -35,36 +36,8 @@ public class Game {
         setupBoard();
     }
 
-    public ChessPiece getPiece(int col, int row) {
-        return pieces.get(new Point(col, row));
-    }
-
-    public ChessPiece getPiece(Point p) {
-        return pieces.get(p);
-    }
-
-    public ChessColor getTurn() {
-        return turn;
-    }
-
     public boolean isGameOver() {
         return gameOver;
-    }
-
-    public List<Point> getLegalMoves(Point pos) {
-        ChessPiece piece = pieces.get(pos);
-        if (piece == null || piece.getColor() != turn) {
-            return new ArrayList<>();
-        }
-
-        List<Point> doubleMovablePawns;
-        if (piece.getColor() == ChessColor.WHITE) {
-            doubleMovablePawns = doubleMovableWhitePawns;
-        } else {
-            doubleMovablePawns = doubleMovableBlackPawns;
-        }
-
-        return ChessMoves.getLegalMoves(pos, piece, pieces, enPassantPawn, doubleMovablePawns);
     }
 
     public void performMove(Point from, Point to) {
@@ -112,18 +85,91 @@ public class Game {
 
         pieces.put(to, piece);
 
-        turn = (turn == ChessColor.WHITE) ? ChessColor.BLACK : ChessColor.WHITE;
+        changeTurn();
     }
 
+    public ChessPiece getPiece(int col, int row) {
+        return pieces.get(new Point(col, row));
+    }
 
-    private void setPiece(String address, ChessType type, ChessColor color) {
-        Point point = ChessMoves.toPoint(address);
+    public ChessPiece getPiece(Point p) {
+        return pieces.get(p);
+    }
 
-        if (point != null) {
-            ChessPiece piece = new ChessPiece(type, color);
-            pieces.put(point, piece);
+    public ChessColor getTurn() {
+        return turn;
+    }
+
+    public ChessColor getWinner() {
+        if (!gameOver) {
+            return this.getTurn();
         }
+        return null;
     }
+
+    public int getTotalTurns() {
+        return totalTurns;
+    }
+
+    public List<Point> getLegalMoves(Point pos) {
+        ChessPiece piece = pieces.get(pos);
+        if (piece == null || piece.getColor() != turn) {
+            return new ArrayList<>();
+        }
+
+        List<Point> doubleMovablePawns;
+        if (piece.getColor() == ChessColor.WHITE) {
+            doubleMovablePawns = doubleMovableWhitePawns;
+        } else {
+            doubleMovablePawns = doubleMovableBlackPawns;
+        }
+
+        return ChessMoves.getLegalMoves(pos, piece, pieces, enPassantPawn, doubleMovablePawns);
+    }
+
+    public Map<Point, ChessPiece> getPiecesMap() {
+        return this.pieces;
+    }
+
+    public void setPiecesMap(Map<Point, ChessPiece> newPieces) {
+        this.pieces.clear();
+        this.pieces.putAll(newPieces);
+    }
+
+    public void setTurn(ChessColor turn) {
+        this.turn = turn;
+    }
+
+    public Point getEnPassantPawn() {
+        return enPassantPawn;
+    }
+
+    public void setEnPassantPawn(Point enPassantPawn) {
+        this.enPassantPawn = enPassantPawn;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+    public List<Point> getDoubleMovablePawns(ChessColor color) {
+        return (color == ChessColor.WHITE) ? doubleMovableWhitePawns : doubleMovableBlackPawns;
+    }
+
+    public void setDoubleMovablePawns(List<Point> points, ChessColor color) {
+        List<Point> target = (color == ChessColor.WHITE) ? doubleMovableWhitePawns : doubleMovableBlackPawns;
+        target.clear();
+        target.addAll(points);
+    }
+
+//    private void setPiece(String address, ChessType type, ChessColor color) {
+//        Point point = ChessMoves.toPoint(address);
+//
+//        if (point != null) {
+//            ChessPiece piece = new ChessPiece(type, color);
+//            pieces.put(point, piece);
+//        }
+//    }
 
     private void setPiece(Point point, ChessType type, ChessColor color) {
         if (point != null) {
@@ -137,6 +183,11 @@ public class Game {
 
         ChessPiece piece = new ChessPiece(type, color);
         pieces.put(point, piece);
+    }
+
+    public void changeTurn() {
+        ++totalTurns;
+        turn = (turn == ChessColor.WHITE) ? ChessColor.BLACK : ChessColor.WHITE;
     }
 
     private void setupBoard() {

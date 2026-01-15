@@ -1,6 +1,7 @@
-package com.greefon.chess.render;
+package com.greefon.chess.gui;
 
 import com.greefon.chess.logic.*;
+import com.greefon.chess.state.GUIStateManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -146,6 +147,43 @@ public class Board extends JComponent implements ActionListener, MouseListener,
                 * (pos.x + pos.y + (pos.x - 5) * (int) (pos.x / 6)) / 5) / 2;
     }
 
+    public Game getGameInstance() {
+        return game;
+    }
+
+    private void promptRestart() {
+        int response = JOptionPane.showConfirmDialog(
+                this,
+                "Restart game?",
+                "Restart confirmation",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+        if (response == JOptionPane.NO_OPTION || response == JOptionPane.CLOSED_OPTION) {
+            return;
+        }
+
+        init();
+        repaint();
+    }
+
+    private void promptExit() {
+        int response = JOptionPane.showConfirmDialog(
+                this,
+                "Exit game?",
+                "Exit confirmation",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+        if (response == JOptionPane.NO_OPTION || response == JOptionPane.CLOSED_OPTION) {
+            return;
+        }
+
+        GUIStateManager.saveGameToJson(this);
+
+        System.exit(0);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == timer) {
@@ -161,8 +199,16 @@ public class Board extends JComponent implements ActionListener, MouseListener,
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE && pressedKeys.add(e.getKeyCode())) {
-            init();
-            repaint();
+            promptExit();
+        }
+        if (e.getKeyCode() == KeyEvent.VK_R && pressedKeys.add(e.getKeyCode())) {
+            promptRestart();
+        }
+        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S && pressedKeys.add(e.getKeyCode())) {
+            GUIStateManager.saveGameToJson(this);
+        }
+        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_L && pressedKeys.add(e.getKeyCode())) {
+            GUIStateManager.loadGameFromJson(this);
         }
     }
 
@@ -221,7 +267,8 @@ public class Board extends JComponent implements ActionListener, MouseListener,
             validMoves.clear();
 
             if (game.isGameOver()) {
-                System.out.println("Game Over! Winner: " + (game.getTurn() == ChessColor.WHITE ? "Black" : "White"));
+                JOptionPane.showMessageDialog(this, "Game over!\n Winner: "
+                        + (game.getWinner() == ChessColor.WHITE ? "Black" : "White"));
             }
             return;
         }

@@ -1,4 +1,4 @@
-package com.greefon.chess.render;
+package com.greefon.chess.gui;
 
 import javax.swing.*;
 import java.awt.*;
