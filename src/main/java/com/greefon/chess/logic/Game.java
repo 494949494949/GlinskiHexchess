@@ -79,6 +79,12 @@ public class Game {
                     enPassantPawn = null;
                 }
             }
+
+            // Повышение
+            ChessColor color = piece.getColor();
+            if (ChessMoves.isPawnPromotable(to, color)) {
+                piece = new ChessPiece(ChessType.QUEEN, color);
+            }
         } else {
             enPassantPawn = null;
         }

@@ -12,16 +12,27 @@ public class ChessMoves {
 
     private static final int[] COLUMN_HEIGHTS = {6, 7, 8, 9, 10, 11, 10, 9, 8, 7, 6};
 
-    public static final ArrayList<Point> whitePawnStartPositions = new ArrayList<>(Arrays.asList(new Point[]{
+    public static final ArrayList<Point> whitePawnStartPositions = new ArrayList<>(Arrays.asList(
             new Point(10, 1), new Point(9, 2), new Point(8, 3),
             new Point(7, 4), new Point(6, 5), new Point(6, 6),
-            new Point(6, 7), new Point(6, 8), new Point(6, 9)
-    }));
-    public static final ArrayList<Point> blackPawnStartPositions = new ArrayList<>(Arrays.asList(new Point[]{
+            new Point(6, 7), new Point(6, 8), new Point(6, 9)));
+    public static final ArrayList<Point> blackPawnStartPositions = new ArrayList<>(Arrays.asList(
             new Point(0, 4), new Point(1, 4), new Point(2, 4),
             new Point(3, 4), new Point(4, 4), new Point(4, 3),
-            new Point(4, 2), new Point(4, 1), new Point(4, 0)
-    }));
+            new Point(4, 2), new Point(4, 1), new Point(4, 0)));
+
+    public static final ArrayList<Point> whitePawnPromotePositions = new ArrayList<>(Arrays.asList(
+            new Point(0, 0), new Point(1, 0), new Point(2, 0),
+            new Point(3, 0), new Point(4, 0), new Point(5, 0),
+            new Point(0, 1), new Point(0, 2), new Point(0, 3),
+            new Point(0, 4), new Point(0, 5)));
+        public static final ArrayList<Point> blackPawnPromotePositions = new ArrayList<>(Arrays.asList(
+            new Point(10, 0), new Point(10, 1), new Point(10, 2),
+            new Point(10, 3), new Point(10, 4), new Point(10, 5),
+            new Point(9, 6), new Point(8, 7), new Point(7, 8),
+            new Point(6, 9), new Point(5, 10)));
+
+
 
     private static Point moveBottomLeft(Point pos) {
         return new Point(pos.x + 1, pos.y - pos.x / 5);
@@ -61,6 +72,14 @@ public class ChessMoves {
 
     public static ArrayList<Point> getBlackPawnStartPositions() {
         return blackPawnStartPositions;
+    }
+
+    public static boolean isPawnPromotable(Point pos, ChessColor color) {
+        if (color == ChessColor.WHITE) {
+            return whitePawnPromotePositions.contains(pos);
+        } else {
+            return blackPawnPromotePositions.contains(pos);
+        }
     }
 
     public static List<Point> getLegalMoves(Point pos,

@@ -267,8 +267,8 @@ public class Board extends JComponent implements ActionListener, MouseListener,
             validMoves.clear();
 
             if (game.isGameOver()) {
-                JOptionPane.showMessageDialog(this, "Game over!\n Winner: "
-                        + (game.getWinner() == ChessColor.WHITE ? "Black" : "White"));
+                JOptionPane.showMessageDialog(this, "Game over in " + game.getTotalTurns() +
+                        "turns!\n Winner: " + (game.getWinner() == ChessColor.WHITE ? "black" : "white"));
             }
             return;
         }
